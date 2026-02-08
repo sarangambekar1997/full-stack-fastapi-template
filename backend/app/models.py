@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime, timezone
+from enum import Enum
 
 from pydantic import EmailStr
 from sqlalchemy import DateTime
@@ -127,3 +128,46 @@ class TokenPayload(SQLModel):
 class NewPassword(SQLModel):
     token: str
     new_password: str = Field(min_length=8, max_length=128)
+
+
+# Notification types
+class NotificationType(str, Enum):
+    MENTION = "mention"
+    LIKE = "like"
+
+
+# Shared properties
+class NotificationBase(SQLModel):
+    type: NotificationType
+    message: str = Field(max_length=500)
+    reference_id: uuid.UUID | None = None
+
+
+# Properties to receive on notification creation
+class NotificationCreate(NotificationBase):
+    user_id: uuid.UUID
+
+
+# Database model
+class Notification(NotificationBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+    is_read: bool = Field(default=False)
+    created_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+
+
+# Properties to return via API
+class NotificationPublic(NotificationBase):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    is_read: bool
+    created_at: datetime | None = None
+
+
+class NotificationsPublic(SQLModel):
+    data: list[NotificationPublic]
+    count: int
+    unread_count: int

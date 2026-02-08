@@ -19,12 +19,14 @@ def user_authentication_headers(
     return headers
 
 
-def create_random_user(db: Session) -> User:
+def create_random_user(db: Session, password: str | None = None) -> tuple[User, str]:
+    """Create a random user and return the user and password."""
     email = random_email()
-    password = random_lower_string()
+    if password is None:
+        password = random_lower_string()
     user_in = UserCreate(email=email, password=password)
     user = crud.create_user(session=db, user_create=user_in)
-    return user
+    return user, password
 
 
 def authentication_token_from_email(

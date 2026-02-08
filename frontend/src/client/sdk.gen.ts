@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse, NotificationsReadNotificationsData, NotificationsReadNotificationsResponse, NotificationsGetUnreadCountResponse, NotificationsReadNotificationData, NotificationsReadNotificationResponse, NotificationsMarkAsReadData, NotificationsMarkAsReadResponse, NotificationsMarkAllAsReadResponse, NotificationsDeleteNotificationData, NotificationsDeleteNotificationResponse } from './types.gen';
 
 export class ItemsService {
     /**
@@ -463,6 +463,120 @@ export class UtilsService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/utils/health-check/'
+        });
+    }
+}
+
+export class NotificationsService {
+    /**
+     * Read Notifications
+     * Retrieve notifications for current user.
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @returns NotificationsPublic Successful Response
+     * @throws ApiError
+     */
+    public static readNotifications(data: NotificationsReadNotificationsData = {}): CancelablePromise<NotificationsReadNotificationsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/notifications/',
+            query: {
+                skip: data.skip,
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+
+    /**
+     * Get Unread Count
+     * Get unread notification count for bell icon badge.
+     * @returns object Successful Response
+     * @throws ApiError
+     */
+    public static getUnreadCount(): CancelablePromise<NotificationsGetUnreadCountResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/notifications/unread-count'
+        });
+    }
+
+    /**
+     * Read Notification
+     * Get notification by ID.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns NotificationPublic Successful Response
+     * @throws ApiError
+     */
+    public static readNotification(data: NotificationsReadNotificationData): CancelablePromise<NotificationsReadNotificationResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/notifications/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+
+    /**
+     * Mark As Read
+     * Mark notification as read.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns NotificationPublic Successful Response
+     * @throws ApiError
+     */
+    public static markAsRead(data: NotificationsMarkAsReadData): CancelablePromise<NotificationsMarkAsReadResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/notifications/{id}/read',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+
+    /**
+     * Mark All As Read
+     * Mark all notifications as read.
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static markAllAsRead(): CancelablePromise<NotificationsMarkAllAsReadResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/notifications/read-all'
+        });
+    }
+
+    /**
+     * Delete Notification
+     * Delete a notification.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteNotification(data: NotificationsDeleteNotificationData): CancelablePromise<NotificationsDeleteNotificationResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/notifications/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
         });
     }
 }

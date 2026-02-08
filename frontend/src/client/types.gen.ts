@@ -234,3 +234,53 @@ export type UtilsTestEmailData = {
 export type UtilsTestEmailResponse = (Message);
 
 export type UtilsHealthCheckResponse = (boolean);
+
+// Notification types
+export type NotificationType = 'mention' | 'like';
+
+export type NotificationPublic = {
+    type: NotificationType;
+    message: string;
+    reference_id?: (string | null);
+    id: string;
+    user_id: string;
+    is_read: boolean;
+    created_at?: (string | null);
+};
+
+export type NotificationsPublic = {
+    data: Array<NotificationPublic>;
+    count: number;
+    unread_count: number;
+};
+
+export type NotificationsReadNotificationsData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type NotificationsReadNotificationsResponse = (NotificationsPublic);
+
+export type NotificationsGetUnreadCountResponse = {
+    unread_count: number;
+};
+
+export type NotificationsReadNotificationData = {
+    id: string;
+};
+
+export type NotificationsReadNotificationResponse = (NotificationPublic);
+
+export type NotificationsMarkAsReadData = {
+    id: string;
+};
+
+export type NotificationsMarkAsReadResponse = (NotificationPublic);
+
+export type NotificationsMarkAllAsReadResponse = (Message);
+
+export type NotificationsDeleteNotificationData = {
+    id: string;
+};
+
+export type NotificationsDeleteNotificationResponse = (Message);

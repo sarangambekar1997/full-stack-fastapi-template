@@ -6,6 +6,7 @@ from sqlmodel import col, func, select
 
 from app.api.deps import CurrentUser, SessionDep
 from app.models import Item, ItemCreate, ItemPublic, ItemsPublic, ItemUpdate, Message
+from app.services.mentions import create_mention_notifications
 
 router = APIRouter(prefix="/items", tags=["items"])
 
@@ -68,6 +69,15 @@ def create_item(
     session.add(item)
     session.commit()
     session.refresh(item)
+
+    # Create notifications for @mentions in description
+    create_mention_notifications(
+        session=session,
+        text=item_in.description,
+        mentioner=current_user,
+        reference_id=item.id,
+    )
+
     return item
 
 
@@ -87,11 +97,24 @@ def update_item(
         raise HTTPException(status_code=404, detail="Item not found")
     if not current_user.is_superuser and (item.owner_id != current_user.id):
         raise HTTPException(status_code=403, detail="Not enough permissions")
+
+    # Check if description is being updated with new mentions
+    old_description = item.description
     update_dict = item_in.model_dump(exclude_unset=True)
     item.sqlmodel_update(update_dict)
     session.add(item)
     session.commit()
     session.refresh(item)
+
+    # Create notifications for new @mentions in updated description
+    if item_in.description and item_in.description != old_description:
+        create_mention_notifications(
+            session=session,
+            text=item_in.description,
+            mentioner=current_user,
+            reference_id=item.id,
+        )
+
     return item
 
 
