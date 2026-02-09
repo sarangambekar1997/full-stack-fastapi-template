@@ -2,7 +2,7 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
-from sqlmodel import func, select
+from sqlmodel import col, func, select
 
 from app.api.deps import CurrentUser, SessionDep
 from app.models import Message
@@ -40,7 +40,7 @@ def read_notifications(
     statement = (
         select(Notification)
         .where(Notification.user_id == current_user.id)
-        .order_by(Notification.created_at.desc())
+        .order_by(col(Notification.created_at).desc())
         .offset(skip)
         .limit(limit)
     )

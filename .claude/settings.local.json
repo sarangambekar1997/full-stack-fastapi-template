@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bun run lint)",
+      "Bash(npm run lint:*)",
+      "Bash(npx biome:*)",
+      "Bash(./node_modules/.bin/biome check:*)",
+      "Bash(npx tsc:*)",
+      "Bash(node:*)",
+      "Bash(npm install:*)",
+      "Bash(powershell -Command \"cd ''D:\\\\Projects\\\\claude-demo\\\\full-stack-fastapi-template\\\\frontend''; npm run lint 2>&1\")",
+      "Bash(powershell -Command \"cd ''D:\\\\Projects\\\\claude-demo\\\\full-stack-fastapi-template\\\\frontend''; npm install 2>&1\")",
+      "Bash(powershell -Command \"cd ''D:\\\\Projects\\\\claude-demo\\\\full-stack-fastapi-template\\\\backend''; python -m py_compile app/main.py 2>&1\")",
+      "Bash(powershell -Command:*)",
+      "Bash(docker compose:*)",
+      "Bash(docker logs:*)",
+      "Bash(curl:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash push:*)",
+      "Bash(git stash:*)",
+      "Bash(git add backend/app/api/main.py backend/app/main.py backend/app/routers/notifications.py compose.override.yml frontend/src/routes/_layout/items.tsx .claude/ CLAUDE.md docs/)"
+    ]
+  }
+}

@@ -1,9 +1,8 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { Search } from "lucide-react"
-import { Suspense } from "react"
+import { AlertCircle, Search } from "lucide-react"
 
-import { ItemsService } from "@/client"
+import { ApiError, ItemsService } from "@/client"
 import { DataTable } from "@/components/Common/DataTable"
 import AddItem from "@/components/Items/AddItem"
 import { columns } from "@/components/Items/columns"
@@ -27,10 +26,39 @@ export const Route = createFileRoute("/_layout/items")({
   }),
 })
 
-function ItemsTableContent() {
-  const { data: items } = useSuspenseQuery(getItemsQueryOptions())
+function ItemsTable() {
+  const { data: items, isLoading, error } = useQuery(getItemsQueryOptions())
 
-  if (items.data.length === 0) {
+  if (isLoading) {
+    return <PendingItems />
+  }
+
+  if (error) {
+    const isApiError = error instanceof ApiError
+    // Redirect to login on auth errors
+    if (isApiError && [401, 403].includes(error.status)) {
+      localStorage.removeItem("access_token")
+      window.location.href = "/login"
+      return null
+    }
+    return (
+      <div className="flex flex-col items-center justify-center text-center py-12">
+        <div className="rounded-full bg-destructive/10 p-4 mb-4">
+          <AlertCircle className="h-8 w-8 text-destructive" />
+        </div>
+        <h3 className="text-lg font-semibold">Failed to load items</h3>
+        <p className="text-muted-foreground">
+          {isApiError
+            ? `Status ${error.status}: ${error.message}`
+            : error instanceof Error
+              ? error.message
+              : "An unknown error occurred"}
+        </p>
+      </div>
+    )
+  }
+
+  if (!items || items.data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center text-center py-12">
         <div className="rounded-full bg-muted p-4 mb-4">
@@ -43,14 +71,6 @@ function ItemsTableContent() {
   }
 
   return <DataTable columns={columns} data={items.data} />
-}
-
-function ItemsTable() {
-  return (
-    <Suspense fallback={<PendingItems />}>
-      <ItemsTableContent />
-    </Suspense>
-  )
 }
 
 function Items() {

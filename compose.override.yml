@@ -10,7 +10,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - "80:80"
+      - "8081:80"
       - "8090:8080"
     # Duplicate the command from compose.yml to add --api.insecure=true
     command:
@@ -53,7 +53,7 @@ services:
   adminer:
     restart: "no"
     ports:
-      - "8080:8080"
+      - "8082:8080"
 
   backend:
     restart: "no"
